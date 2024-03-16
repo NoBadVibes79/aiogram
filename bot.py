@@ -3,12 +3,13 @@ import logging
 import conf
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters.command import Command
+from config_reader import config
 from datetime import datetime
 
 
 # Включаем логирование, чтобы не пропустить важные сообщения
 logging.basicConfig(level=logging.INFO)
-bot = Bot(token=conf.TOKEN)
+bot = Bot(token=config.bot_token.get_secret_value())
 dp = Dispatcher()
 dp["started_at"] = datetime.now().strftime("%Y-%m-%d %H:%M")
 
