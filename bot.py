@@ -3,7 +3,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.bot import DefaultBotProperties
 
 from config_reader import config
-from handlers import group_games, usernames, photo
+from handlers import group_games, usernames, photo, forward, email
 
 # Запуск бота
 async def main():
@@ -11,7 +11,7 @@ async def main():
     bot = Bot(token=config.bot_token.get_secret_value(), default=default)
     dp = Dispatcher()
     
-    dp.include_routers(group_games.router, usernames.router, photo.router)
+    dp.include_routers(email.router, forward.router, group_games.router, usernames.router, photo.router)
     
     # Запускаем бота и пропускаем все накопленные входящие
     # Да, этот метод можно вызвать даже если у вас поллинг
