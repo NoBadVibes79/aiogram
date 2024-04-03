@@ -4,6 +4,7 @@ from aiogram.types import Message, FSInputFile, URLInputFile, BufferedInputFile
 from aiogram.enums import ParseMode
 from aiogram.utils.formatting import Text, Bold
 from aiogram.utils.media_group import MediaGroupBuilder
+from aiogram.utils.markdown import hide_link
 from config_reader import config
 
 from datetime import datetime
@@ -224,6 +225,24 @@ async def cmd_album(message: Message):
     await message.answer_media_group(
         # Не забудьте вызвать build()
         media=album_builder.build()
+    )
+
+
+@dp.message(F.new_chat_members)
+async def somebody_added(message: Message):
+    for user in message.new_chat_members:
+        # проперти full_name берёт сразу имя И фамилию 
+        # (на скриншоте выше у юзеров нет фамилии)
+        await message.reply(f"Привет, {user.full_name}")
+
+
+@dp.message(Command("hidden_link"))
+async def cmd_hidden_link(message: Message):
+    await message.answer(
+        f"{hide_link('https://telegra.ph/file/562a512448876923e28c3.png')}"
+        f"Документация Telegram: *существует*\n"
+        f"Пользователи: *не читают документацию*\n"
+        f"Груша:"
     )
 
 
