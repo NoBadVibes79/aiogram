@@ -1,13 +1,17 @@
 import asyncio
 from aiogram import Bot, Dispatcher
-from handlers import questions, different_types, filters
+from aiogram.client.bot import DefaultBotProperties
+
+from config_reader import config
+from handlers import group_games, usernames, photo
 
 # Запуск бота
 async def main():
-    bot = Bot(token="TOKEN")
+    default = DefaultBotProperties(parse_mode="HTML")
+    bot = Bot(token=config.bot_token.get_secret_value(), default=default)
     dp = Dispatcher()
     
-    dp.include_routers(questions.router, different_types.router)
+    dp.include_routers(group_games.router, usernames.router, photo.router)
     
     # Запускаем бота и пропускаем все накопленные входящие
     # Да, этот метод можно вызвать даже если у вас поллинг
