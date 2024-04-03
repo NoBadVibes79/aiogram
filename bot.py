@@ -1,4 +1,4 @@
-from aiogram import Bot, Dispatcher, types, F, html
+from aiogram import Bot, Dispatcher, types, F, html, flags
 from aiogram.filters.command import Command, CommandObject, CommandStart
 from aiogram.filters.callback_data import CallbackData
 from aiogram.types import Message, FSInputFile, URLInputFile, BufferedInputFile
@@ -7,6 +7,7 @@ from aiogram.utils.formatting import Text, Bold
 from aiogram.utils.media_group import MediaGroupBuilder
 from aiogram.utils.markdown import hide_link
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
+from aiogram.utils.callback_answer import CallbackAnswerMiddleware, CallbackAnswer, CallbackQuery
 from aiogram.exceptions import TelegramBadRequest
 from config_reader import config
 from contextlib import suppress
@@ -24,6 +25,26 @@ logging.basicConfig(level=logging.INFO)
 bot = Bot(token=config.bot_token.get_secret_value(), parse_mode="HTML")
 dp = Dispatcher()
 dp["started_at"] = datetime.now().strftime("%Y-%m-%d %H:%M")
+dp.callback_query.middleware(CallbackAnswerMiddleware())
+
+
+dp.callback_query.middleware(
+    CallbackAnswerMiddleware(
+        pre=True, text="Готово!", show_alert=True
+    )
+)
+
+
+# @dp.callback_query()
+# @flags.callback_answer(pre=False)
+# async def my_handler(callback: CallbackQuery, callback_answer: CallbackAnswer):
+#     ... # тут какой-то код
+#     if <everything is ok>:
+#         callback_answer.text = "Отлично!"
+#     else:
+#         callback_answer.text = "Что-то пошло не так. Попробуйте позже"
+#         callback_answer.cache_time = 10
+
 
 @dp.message(Command("dice"))
 async def cmd_dice(message: types.Message):
@@ -523,6 +544,9 @@ async def callbacks_num_finish_fab(callback: types.CallbackQuery):
 
     await callback.message.edit_text(f"Итого: {user_value}")
     await callback.answer()
+
+
+#! Auto Response to Callback
 
 
 async def main():
