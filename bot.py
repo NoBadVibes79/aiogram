@@ -13,7 +13,6 @@ bot = Bot(token=config.bot_token.get_secret_value())
 dp = Dispatcher()
 dp["started_at"] = datetime.now().strftime("%Y-%m-%d %H:%M")
 
-
 @dp.message(Command("dice"))
 async def cmd_dice(message: types.Message):
     await message.answer_dice(emoji="🎲")
