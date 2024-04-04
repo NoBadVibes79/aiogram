@@ -1,10 +1,14 @@
+import logging
+import sys
 import asyncio
 from aiogram import Bot, Dispatcher
 from aiogram.client.bot import DefaultBotProperties
 
 from config_reader import config
-from handlers import group_games, usernames, photo, forward, email
-from middlewares.standart import SomeMiddleware
+from handlers import group_games, usernames, photo, email, checkin, write_mail
+from middlewares.standart import SomeMiddleware, UserInternalIdMiddleware, HappyMonthMiddleware
+from middlewares.weekend import WeekendCallbackMiddleware
+from middlewares.long_operation import ChatActionMiddleware
 
 # Запуск бота
 async def main():
@@ -12,9 +16,16 @@ async def main():
     bot = Bot(token=config.bot_token.get_secret_value(), default=default)
     dp = Dispatcher()
     
-    email.router.message.middleware(SomeMiddleware())
+    checkin.router.message.middleware(WeekendCallbackMiddleware())
     
-    dp.include_routers(email.router, group_games.router, usernames.router, photo.router)
+    
+    dp.update.outer_middleware(UserInternalIdMiddleware())
+    email.router.message.middleware(SomeMiddleware())
+    email.router.message.middleware(HappyMonthMiddleware())
+    dp.callback_query.outer_middleware(WeekendCallbackMiddleware())
+    write_mail.router.message.outer_middleware(ChatActionMiddleware())
+    
+    dp.include_routers(write_mail.router, checkin.router, email.router, group_games.router, usernames.router, photo.router)
     
     # Запускаем бота и пропускаем все накопленные входящие
     # Да, этот метод можно вызвать даже если у вас поллинг
@@ -23,4 +34,5 @@ async def main():
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     asyncio.run(main())
