@@ -6,7 +6,8 @@ from aiogram.types import Message
 from filters.find_usernames import HasUsernamesFilter
 
 router = Router()
-
+router.my_chat_member.filter(F.chat.type == "private")
+router.message.filter(F.chat.type == "private")
 
 @router.message(
     F.text,

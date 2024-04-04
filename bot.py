@@ -5,8 +5,10 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.bot import DefaultBotProperties
 
 from config_reader import config
-from handlers import group_games, usernames, photo, email, checkin, write_mail
-from middlewares.standart import SomeMiddleware, UserInternalIdMiddleware, HappyMonthMiddleware
+from handlers import \
+    group_games, usernames, photo, email, checkin, write_mail
+from middlewares.standart import \
+    SomeMiddleware, UserInternalIdMiddleware, HappyMonthMiddleware
 from middlewares.weekend import WeekendCallbackMiddleware
 from middlewares.long_operation import ChatActionMiddleware
 

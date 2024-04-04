@@ -5,6 +5,8 @@ from aiogram.types import Message, ReplyKeyboardRemove
 from kb.for_questions import get_yes_no_kb
 
 router = Router()  # [1]
+router.my_chat_member.filter(F.chat.type == "private")
+router.message.filter(F.chat.type == "private")
 
 @router.message(Command("start"))  # [2]
 async def cmd_start(message: Message):

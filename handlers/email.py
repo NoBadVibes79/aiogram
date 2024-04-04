@@ -3,6 +3,8 @@ from aiogram import F, Router
 from aiogram.types import Message
 
 router = Router()
+router.my_chat_member.filter(F.chat.type == "private")
+router.message.filter(F.chat.type == "private")
 
 @router.message(F.entities[:].type == MessageEntityType.EMAIL)
 async def all_emails(message: Message):

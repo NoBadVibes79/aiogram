@@ -2,6 +2,8 @@ from aiogram import Router, F
 from aiogram.types import Message
 
 router = Router()
+router.my_chat_member.filter(F.chat.type == "private")
+router.message.filter(F.chat.type == "private")
 
 @router.message(F.text)
 async def message_with_text(message: Message):
