@@ -6,7 +6,7 @@ from aiogram.client.bot import DefaultBotProperties
 
 from config_reader import config
 from handlers import \
-    group_games, usernames, photo, email, checkin, write_mail
+    group_games, usernames, photo, email, checkin, write_mail, in_pm
 from middlewares.standart import \
     SomeMiddleware, UserInternalIdMiddleware, HappyMonthMiddleware
 from middlewares.weekend import WeekendCallbackMiddleware
@@ -27,7 +27,7 @@ async def main():
     dp.callback_query.outer_middleware(WeekendCallbackMiddleware())
     write_mail.router.message.outer_middleware(ChatActionMiddleware())
     
-    dp.include_routers(write_mail.router, checkin.router, email.router, group_games.router, usernames.router, photo.router)
+    dp.include_routers(in_pm.router)
     
     # Запускаем бота и пропускаем все накопленные входящие
     # Да, этот метод можно вызвать даже если у вас поллинг
