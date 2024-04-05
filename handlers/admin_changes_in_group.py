@@ -6,6 +6,8 @@ from aiogram.types import ChatMemberUpdated
 
 from config_reader import config
 
+#! not work, is not handled
+
 router = Router()
 router.chat_member.filter(F.chat.id == config.main_chat_id)
 
@@ -19,7 +21,10 @@ router.chat_member.filter(F.chat.id == config.main_chat_id)
     )
 )
 async def admin_promoted(event: ChatMemberUpdated, admins: set[int]):
+    print(admins)
     admins.add(event.new_chat_member.user.id)
+    print(event.new_chat_member.user.id)
+    print(admins)
     await event.answer(
         f"{event.new_chat_member.user.first_name} "
         f"был(а) повышен(а) до Администратора!"

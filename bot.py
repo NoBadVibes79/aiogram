@@ -21,14 +21,13 @@ async def main():
 
     default = DefaultBotProperties(parse_mode="HTML")
     bot = Bot(token=config.bot_token.get_secret_value(), default=default)
+    print(bot)
     dp = Dispatcher()
     
     checkin.router.message.middleware(WeekendCallbackMiddleware())
     
     
     dp.update.outer_middleware(UserInternalIdMiddleware())
-    email.router.message.middleware(SomeMiddleware())
-    email.router.message.middleware(HappyMonthMiddleware())
     dp.callback_query.outer_middleware(WeekendCallbackMiddleware())
     write_mail.router.message.outer_middleware(ChatActionMiddleware())
     
