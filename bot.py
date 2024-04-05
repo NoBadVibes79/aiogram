@@ -3,12 +3,13 @@ import sys
 import asyncio
 from aiogram import Bot, Dispatcher
 from aiogram.client.bot import DefaultBotProperties
+from aiogram.fsm.storage.memory import MemoryStorage
 
 from config_reader import config
 from handlers import \
-    admin_changes_in_group, bot_in_group, events_in_group, write_mail, in_pm, ordering_food, checkin
-from middlewares.standart import \
-    SomeMiddleware, UserInternalIdMiddleware, HappyMonthMiddleware
+    admin_changes_in_group, bot_in_group, events_in_group, \
+    write_mail, in_pm, ordering_food, checkin, common
+from middlewares.standart import UserInternalIdMiddleware
 from middlewares.weekend import WeekendCallbackMiddleware
 from middlewares.long_operation import ChatActionMiddleware
 
@@ -21,7 +22,7 @@ async def main():
 
     default = DefaultBotProperties(parse_mode="HTML")
     bot = Bot(token=config.bot_token.get_secret_value(), default=default)
-    dp = Dispatcher()
+    dp = Dispatcher(storage=MemoryStorage())
     
     checkin.router.message.middleware(WeekendCallbackMiddleware())
     
@@ -30,6 +31,7 @@ async def main():
     dp.callback_query.outer_middleware(WeekendCallbackMiddleware())
     write_mail.router.message.outer_middleware(ChatActionMiddleware())
     
+    dp.include_router(common.router)
     dp.include_routers(
         ordering_food.router, in_pm.router, events_in_group.router,
         bot_in_group.router, admin_changes_in_group.router
