@@ -32,7 +32,6 @@ async def bot_added_as_admin(event: ChatMemberUpdated):
     )
 )
 async def bot_added_as_member(event: ChatMemberUpdated):
-    print(event.bot)
     # Вариант посложнее: бота добавили как обычного участника.
     # Но может отсутствовать право написания сообщений, поэтому заранее проверим.
     chat_info = await event.bot.get_chat(event.chat.id)

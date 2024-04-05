@@ -6,7 +6,7 @@ from aiogram.client.bot import DefaultBotProperties
 
 from config_reader import config
 from handlers import \
-    admin_changes_in_group, bot_in_group, email, checkin, events_in_group, write_mail, in_pm
+    admin_changes_in_group, bot_in_group, events_in_group, write_mail, in_pm, ordering_food, checkin
 from middlewares.standart import \
     SomeMiddleware, UserInternalIdMiddleware, HappyMonthMiddleware
 from middlewares.weekend import WeekendCallbackMiddleware
@@ -21,7 +21,6 @@ async def main():
 
     default = DefaultBotProperties(parse_mode="HTML")
     bot = Bot(token=config.bot_token.get_secret_value(), default=default)
-    print(bot)
     dp = Dispatcher()
     
     checkin.router.message.middleware(WeekendCallbackMiddleware())
@@ -32,7 +31,7 @@ async def main():
     write_mail.router.message.outer_middleware(ChatActionMiddleware())
     
     dp.include_routers(
-        in_pm.router, events_in_group.router,
+        ordering_food.router, in_pm.router, events_in_group.router,
         bot_in_group.router, admin_changes_in_group.router
         )
     
