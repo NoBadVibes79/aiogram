@@ -14,7 +14,7 @@ router = Router()
 @router.message(Command("save"))
 async def save_start(message: Message, state: FSMContext):
     await state.set_state(SaveCommon.waiting_for_save_start)
-    await message.answer("Отправь мне сообщение со ссылкой для сохранения.")
+    await message.answer("Отправь мне сообщение со ссылкой или фото для сохранения.")
 
 # Ловим сообщение где есть ссылка
 @router.message(SaveCommon.waiting_for_save_start, F.text, HasLinkFilter())
