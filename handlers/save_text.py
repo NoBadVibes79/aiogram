@@ -2,7 +2,7 @@ from typing import Optional
 
 from aiogram import F, Router
 from aiogram.filters.command import Command, CommandObject
-from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
 
 from states import SaveCommon, TextSave
@@ -10,6 +10,12 @@ from filters import HasLinkFilter
 from storage import add_link
 
 router = Router()
+
+@router.message(Command("save"))
+async def save_start(message: Message, state: FSMContext):
+    await state.set_state(SaveCommon.waiting_for_save_start)
+    await message.answer("Отправь мне сообщение со ссылкой для сохранения.")
+
 # Ловим сообщение где есть ссылка
 @router.message(SaveCommon.waiting_for_save_start, F.text, HasLinkFilter())
 async def save_text_has_link(message: Message, link: str, state: FSMContext):
