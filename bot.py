@@ -9,9 +9,8 @@ from config_reader import config
 from handlers import \
     admin_changes_in_group, bot_in_group, events_in_group, \
     write_mail, in_pm, ordering_food, checkin, common
-from middlewares.standart import UserInternalIdMiddleware
-from middlewares.weekend import WeekendCallbackMiddleware
-from middlewares.long_operation import ChatActionMiddleware
+from middlewares import \
+    UserInternalIdMiddleware, WeekendCallbackMiddleware, ChatActionMiddleware
 
 # Запуск бота
 async def main():
