@@ -7,7 +7,7 @@ from aiogram.fsm.storage.memory import MemoryStorage
 
 from config_reader import config
 from handlers import \
-    inline_mode, save_images, common, save_text
+    inline_mode, save_images, common, save_text, delete_data
 from middlewares import \
     UserInternalIdMiddleware, WeekendCallbackMiddleware, ChatActionMiddleware
 
@@ -31,7 +31,8 @@ async def main():
     
     dp.include_router(common.router)
     dp.include_routers(
-        save_text.router, inline_mode.router, save_images.router
+        save_text.router, inline_mode.router, save_images.router,
+        delete_data.router
         )
     
     

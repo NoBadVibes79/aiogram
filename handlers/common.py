@@ -1,9 +1,12 @@
 from aiogram import F, Router
 from aiogram.filters import Command
-from aiogram.filters import StateFilter
+from aiogram.filters.state import StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state
-from aiogram.types import Message, ReplyKeyboardRemove
+from aiogram.types import \
+    Message, ReplyKeyboardRemove, InlineKeyboardButton, InlineKeyboardMarkup
+
+from states import DeleteCommon, SaveCommon
 
 router = Router()
 
@@ -40,4 +43,30 @@ async def cmd_cancel(message: Message, state: FSMContext):
     await message.answer(
         text="Действие отменено",
         reply_markup=ReplyKeyboardRemove()
+    )
+
+@router.message(Command("save"))
+async def save_start(message: Message, state: FSMContext):
+    await state.set_state(SaveCommon.waiting_for_save_start)
+    await message.answer("Отправь мне сообщение со ссылкой или фото для сохранения.")
+
+@router.message(Command("delete"), StateFilter(None))
+async def cmd_delete(message: Message, state: FSMContext):
+    kb = []
+    kb.append([
+        InlineKeyboardButton(
+            text="Выбрать ссылку",
+            switch_inline_query_current_chat="links"
+        )
+    ])
+    kb.append([
+        InlineKeyboardButton(
+            text="Выбрать изображение",
+            switch_inline_query_current_chat="images"
+        )
+    ])
+    await state.set_state(DeleteCommon.waiting_for_delete_start)
+    await message.answer(
+        text="Выберите, что хотите удалить:",
+        reply_markup=InlineKeyboardMarkup(inline_keyboard=kb)
     )
