@@ -1,5 +1,5 @@
 from aiogram import F, Router
-from aiogram.filters import Command
+from aiogram.filters import Command, CommandStart
 from aiogram.filters.state import StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state
@@ -11,14 +11,6 @@ from states import DeleteCommon, SaveCommon
 router = Router()
 
 
-@router.message(Command(commands=["start"]))
-async def cmd_start(message: Message, state: FSMContext):
-    await state.clear()
-    await message.answer(
-        text="Выберите, что хотите заказать: "
-             "блюда (/food) или напитки (/drinks).",
-        reply_markup=ReplyKeyboardRemove()
-    )
 
 
 # Нетрудно догадаться, что следующие два хэндлера можно 
@@ -45,10 +37,18 @@ async def cmd_cancel(message: Message, state: FSMContext):
         reply_markup=ReplyKeyboardRemove()
     )
 
+
+@router.message(CommandStart(magic=F.args == "add"))
+@router.message(Command("save"), StateFilter(None))
+async def cmd_save(message: Message, state: FSMContext):
+    await state.set_state(SaveCommon.waiting_for_save_start)
+    await message.answer("Отправь мне сообщение с ссылкой или фото для сохранения.")
+
+
 @router.message(Command("save"))
 async def save_start(message: Message, state: FSMContext):
     await state.set_state(SaveCommon.waiting_for_save_start)
-    await message.answer("Отправь мне сообщение со ссылкой или фото для сохранения.")
+    await message.answer("Отправь мне сообщение с ссылкой или фото для сохранения.")
 
 @router.message(Command("delete"), StateFilter(None))
 async def cmd_delete(message: Message, state: FSMContext):
@@ -69,4 +69,13 @@ async def cmd_delete(message: Message, state: FSMContext):
     await message.answer(
         text="Выберите, что хотите удалить:",
         reply_markup=InlineKeyboardMarkup(inline_keyboard=kb)
+    )
+    
+@router.message(Command(commands=["start"]))
+async def cmd_start(message: Message, state: FSMContext):
+    await state.clear()
+    await message.answer(
+        text="Выберите, что хотите заказать: "
+             "блюда (/food) или напитки (/drinks).",
+        reply_markup=ReplyKeyboardRemove()
     )

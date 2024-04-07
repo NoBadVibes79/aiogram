@@ -2,7 +2,7 @@ from typing import Optional
 
 from aiogram import F, Router
 from aiogram.filters.command import Command, CommandObject
-from aiogram.types import Message
+from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.fsm.context import FSMContext
 
 from states import SaveCommon, TextSave
@@ -53,7 +53,15 @@ async def last_step(
     data = await state.get_data()
     add_link(message.from_user.id, data["link"], data["title"], data["description"])
 
-    await message.answer("Ссылка сохранена!")
+    kb = [[InlineKeyboardButton(
+        text="Попробовать",
+        switch_inline_query="links"
+    )]]
+    
+    await message.answer(
+        text="Ссылка сохранена!",
+        reply_markup=InlineKeyboardMarkup(kb)
+        )
     await state.clear()
 
 @router.message(TextSave.waiting_for_title, F.text)

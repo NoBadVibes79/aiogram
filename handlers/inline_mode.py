@@ -45,7 +45,11 @@ async def show_user_links(inline_query: InlineQuery):
             )
         ))
     # Важно указать is_personal=True!
-    await inline_query.answer(results, is_personal=True)
+    await inline_query.answer(
+            results, is_personal=True,
+            switch_pm_text="Добавить ещё »»",
+            switch_pm_parameter="add"
+        )
 
 @router.inline_query(F.query == "images")
 async def show_user_images(inline_query: InlineQuery):
@@ -57,4 +61,8 @@ async def show_user_images(inline_query: InlineQuery):
             photo_file_id=file_id
         ))
     # Важно указать is_personal=True!
-    await inline_query.answer(results, is_personal=True)
+    await inline_query.answer(
+            results, is_personal=True,
+            switch_pm_text="Добавить ещё »»",
+            switch_pm_parameter="add"
+        )
